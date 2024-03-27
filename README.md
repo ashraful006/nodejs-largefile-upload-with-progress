@@ -7,7 +7,6 @@ This project provides a simple interface for uploading large files with a progre
 - **File Upload**: Allows users to upload large files through a web interface.
 - **Progress Bar**: Displays real-time progress of the file upload.
 - **Server-side Storage**: Stores the uploaded files securely on the server.
-- **Easy to Use**: Simple interface for users to upload files without hassle.
 
 ## Requirements
 
