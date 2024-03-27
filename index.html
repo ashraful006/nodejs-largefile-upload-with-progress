@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Node js file upload</title>
+</head>
+<body>Please select a file and submit:</p>
+    <input type="file" name="file" id="file">
+    <button type="button" id="submit">submit</button>
+    <span id="progress"></span>
+    <script>
+        const submitButton = document.getElementById("submit");
+        const fileInput = document.getElementById("file");
+        const progress = document.getElementById("progress");
+
+        submitButton.addEventListener("click", () => {
+            const fileReader = new FileReader();
+            const file = fileInput.files[0];
+
+            fileReader.readAsArrayBuffer(file);
+
+            fileReader.onload = async (event) => {
+                const CHUNK_SIZE = 1000;
+                const totalChunk = event.target.result.byteLength;
+                const chunkCount = totalChunk / CHUNK_SIZE;
+
+                const fileName = (new Date()).getTime() + "_file";
+                for (let i = 0; i < chunkCount + 1; i ++) {
+                    const chunk = event.target.result.slice(i * CHUNK_SIZE, i * CHUNK_SIZE + CHUNK_SIZE);
+
+                    await fetch("http://localhost:5050/fileUpload",{
+                        "method": "POST",
+                        "headers": {
+                            "content-type": "application/octet-stream",
+                            "content-length": chunk.length,
+                            "file-name": fileName
+                        },
+                        "body": chunk
+                    });
+                    
+                    progress.textContent = Math.round((i / chunkCount) * 100, 0) + "%";
+                }
+            };
+        });
+    </script>
+</body>
+</html>
